@@ -1,5 +1,5 @@
 import graphene
-from graphene_django import DjangoObjectType
+from graphene_django import DjangoObjectType, DjangoListField
 from .models import Quiz, Answer, Category, Question
 
 
@@ -28,10 +28,8 @@ class QuizType(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    quiz = graphene.Field(QuizType)
-
-    def resolve_quiz(self, info):
-        return Quiz.objects.all().first()
+    all_quizzes = DjangoListField(QuizType)
+    all_questions = DjangoListField(QuestionType)
 
 
 schema = graphene.Schema(query=Query)
