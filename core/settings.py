@@ -39,9 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'graphene_django',
+    'graphql_auth',
+    'django_filters',
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
 
     'books',
     'quiz',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +132,37 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+GRAPHENE = {
+    'SCHEMA': 'users.schema.schema',
+    'MIDDLEWARE': ['graphql_jwt.middleware.JSONWebTokenMiddleware'],
+}
+from datetime import timedelta
+GRAPHQL_JWT = {
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.Register",
+        "graphql_auth.mutations.VerifyAccount",
+        "graphql_auth.mutations.ResendActivationEmail",
+        "graphql_auth.mutations.SendPasswordResetEmail",
+        "graphql_auth.mutations.PasswordReset",
+        "graphql_auth.mutations.ObtainJSONWebToken",
+        "graphql_auth.mutations.VerifyToken",
+        "graphql_auth.mutations.RefreshToken",
+        "graphql_auth.mutations.RevokeToken",
+        "graphql_auth.mutations.VerifySecondaryEmail",
+    ],
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=5),
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+}
+
+AUTHENTICATION_BACKENDS = [
+    # "graphql_jwt.backends.JSONWebTokenBackend",
+    'graphql_auth.backends.GraphQLAuthBackend',
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+AUTH_USER_MODEL = 'users.ExtendUser'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # this captures the email and prints it out to terminal

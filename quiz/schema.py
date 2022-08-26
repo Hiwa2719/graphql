@@ -64,13 +64,12 @@ class DeleteCategory(graphene.Mutation):
     class Arguments:
         category_id = graphene.Int(required=True)
 
-
     def mutate(self, info, category_id):
         category = get_object_or_404(Category, id=category_id).delete()
         return CreateCategory(category=category_id)
 
 
-class Mutation(graphene.Mutation):
+class Mutation(graphene.ObjectType):
     update_category = CategoryUpdate.Field()
     create_category = CreateCategory.Field()
     delete_category = DeleteCategory.Field()
