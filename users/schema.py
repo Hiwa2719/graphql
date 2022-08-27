@@ -12,6 +12,8 @@ class AuthMutation(graphene.ObjectType):
     register = mutations.Register.Field()
     login = mutations.ObtainJSONWebToken.Field()
     verify_account = mutations.VerifyAccount.Field()
+    update_account = mutations.UpdateAccount.Field()
+
 
 class Mutation(AuthMutation):
     pass
